@@ -11,9 +11,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       
       <body>
-        <nav>
+        {/*<nav>
           <Link href="./login">Login</Link>
-        </nav>
+        </nav>*/}
         {children}
       </body>
     </html>
