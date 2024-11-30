@@ -1,10 +1,10 @@
 
+import LoginReactHook from "@/app/components/LoginReactHook"
 
-export default function Home() {
-  return (
-    <>
-    
-    <footer></footer>
-    </>
-  );
+export default function Login(){
+    return(
+      <>
+        <LoginReactHook></LoginReactHook>  
+      </>
+    )
 }
