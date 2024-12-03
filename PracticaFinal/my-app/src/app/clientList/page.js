@@ -1,12 +1,13 @@
-import ClientRouter from "../components/ClientRouter";
+
+import ClientList from "../components/ListaClient"
 import { ThemeProvider } from "../components/Context";
-export default function ClientPage(){
+export default function ClientListPage(){
     return(
         <>
             <ThemeProvider>
-            <ClientRouter></ClientRouter>
+            <ClientList></ClientList>
             </ThemeProvider>
         </>
+
     )
-    
 }

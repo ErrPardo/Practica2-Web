@@ -9,7 +9,6 @@ import { useState } from 'react';
 
 export default function LoginReactHook(){
     const router=useRouter();
-    const [isWaiting, setIsWaiting] = useState(false);
 
     const SignSquema=Yup.object({
         email:Yup.string().email("No es un email valido").required(),
@@ -31,18 +30,17 @@ export default function LoginReactHook(){
     }
     
     useEffect(()=>{
-        setIsWaiting(true);
+        
         const token=localStorage.getItem('jwt')
         if(token){
             router.push("/loader");
             setTimeout(() => {
                 router.push("/client")
-            }, 5000);
+            }, 3000);
             
         } 
     },[])
 
-    if(isWaiting) return null
     return(
         
         <div className=' flex flex-col items-center w-screen h-screen'>
