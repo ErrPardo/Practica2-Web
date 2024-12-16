@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useForm} from 'react-hook-form'
 import {yupResolver} from '@hookform/resolvers/yup'
 import * as Yup from 'yup';
+import { useRouter } from "next/navigation";
 
 export default function DetalleProject(){
     const [client,setClient]=useState([])
@@ -26,7 +27,12 @@ export default function DetalleProject(){
             
     },[])
     const handleClick=(cambios)=>{
-        if(cambios==='RellenarAlbaran'){
+
+
+        if(cambios==='EditarProyecto'){
+            setContent(<EditarProject project={project} handleClick={handleClick}/>)
+        }
+        else if(cambios==='RellenarAlbaran'){
             
             setContent(<FormAlbaran  project={project} handleClick={handleClick}/>)
         }
@@ -68,7 +74,7 @@ export default function DetalleProject(){
                             
                         </div>
                         <div className="items-end flex justify-end gap-2 ">
-                                <button className="flex border  justify-center flex-col text-xl gap-2 w-[20%] p-4 mt-5 border-gray-300 bg-gray-100 text-gray-600 rounded-lg shadow-md  hover:bg-gray-300 transition duration-200">Editar</button>
+                                <button className="flex border  justify-center flex-col text-xl gap-2 w-[20%] p-4 mt-5 border-gray-300 bg-gray-100 text-gray-600 rounded-lg shadow-md  hover:bg-gray-300 transition duration-200" onClick={()=>handleClick("EditarProyecto")}>Editar</button>
                                 <button className="flex border  justify-center flex-col text-xl gap-2 w-[23%] p-4 mt-5 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-200" onClick={()=>handleClick("RellenarAlbaran")}>Crear Albaran</button>
                         </div>
                     </div>   
@@ -94,6 +100,138 @@ const Datos=({project})=>{
         </div>    
     )
 }
+
+const EditarProject=({project,handleClick})=>{
+    const router=useRouter()
+    const SignSquema=Yup.object({
+        name: Yup.string().min(4, 'Mínimo 4 caracteres').required(),
+        street: Yup.string().required('La calle es obligatoria'),
+        number: Yup.string().required('El número es obligatorio'),
+        postal: Yup.string().matches(/^\d{4,5}$/, 'Código postal inválido').required(),
+        province: Yup.string().required('La provincia es obligatoria'),
+        projectCode: Yup.string().min(9, '9 caracteres requerido').required(),
+        code: Yup.string().min(9, '9 caracteres requerido').required(),
+        email: Yup.string().email('Correo electrónico no válido').required()
+    })
+    const {register,handleSubmit,formState:{errors}}=useForm({resolver:yupResolver(SignSquema),
+        defaultValues: {
+            name: project?.name || '',
+            street: project?.address?.street || '',
+            number: project?.address?.number || '',
+            postal: project?.address?.postal || '',
+            province: project?.address?.province || '',
+            projectCode: project?.projectCode || '',
+            code: project?.code || '',
+            email: project?.email || ''
+        }
+    });
+
+    function onSubmit(data){
+        
+        const token=localStorage.getItem('jwt')
+        const address = { street: data.street,number: data.number,postal: data.postal, province: data.province}
+        data={...data,address,clientId:project.clientId}
+        fetch(`https://bildy-rpmaya.koyeb.app/api/project/${project._id}`,{
+            method:"PUT",
+            headers:{ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            body:JSON.stringify(data)  
+        })
+        
+        router.push("../projectList")
+    }
+    return(
+        <div className="border bg-white border-gray-300 rounded-xl shadow-xl flex-1 flex justify-center items-center flex-col ml-2 overflow-y-auto p-6">
+            <form
+                className="h-2/4 w-[90%] flex flex-wrap justify-center"
+                onSubmit={handleSubmit(onSubmit)}
+            >
+                <p className="w-full text-lg font-medium text-gray-700">
+                    Nombre del proyecto
+                </p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('name')}
+                    placeholder="Introduce el nombre"
+                />
+                {errors.name && <p>{errors.name.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Calle</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('street')}
+                    placeholder="Introduce la calle"
+                />
+                {errors.street && <p>{errors.street.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Número</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('number')}
+                    placeholder="Introduce el número"
+                />
+                {errors.number && <p>{errors.number.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Código Postal</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('postal')}
+                    placeholder="Introduce el código postal"
+                />
+                {errors.postal && <p>{errors.postal.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Provincia</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('province')}
+                    placeholder="Introduce la provincia"
+                />
+                {errors.province && <p>{errors.province.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Código del proyecto</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('projectCode')}
+                    placeholder="Introduce el código del proyecto"
+                />
+                {errors.projectCode && <p>{errors.projectCode.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Código</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('code')}
+                    placeholder="Introduce el código"
+                />
+                {errors.code && <p>{errors.code.message}</p>}
+
+                <p className="w-full text-lg font-medium text-gray-700">Correo Electrónico</p>
+                <input
+                    className="border w-full h-16 rounded-md shadow-md p-4 bg-white"
+                    {...register('email')}
+                    placeholder="Introduce el correo electrónico"
+                />
+                {errors.email && <p>{errors.email.message}</p>}
+
+                <div className="flex justify-end w-full mt-5 gap-5">
+                    <button
+                        type="button"
+                        className="border w-1/4 h-16 font-medium border-gray-300 bg-gray-100 text-gray-600 p-2 rounded-lg shadow-md hover:bg-gray-300 transition duration-200"
+                        onClick={() => handleClick('Cancelar')}
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
+                        className="border w-1/4 h-16 font-medium bg-blue-600 text-white p-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
+                    >
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    )
+}
+
+
 
 const Albaran=({project})=>{
     const [detalleAlbaran,setDetalleAlbaran]=useState([])

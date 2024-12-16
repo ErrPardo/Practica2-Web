@@ -14,13 +14,16 @@ export default function ProjectRouter() {
     if (projects == null || clients == null) {
       return // No hacer nada si aún no hay datos
     }
-
-    if (clients.length === 0) {
+    const client=JSON.parse(localStorage.getItem('client'))
+    if (clients.length === 0 ) {
       alert("Debes crear un cliente")
       router.push("/clientCreate") // No hacer nada si no hay clientes
     }
-
-    if (projects.length === 0) {
+    else if(!client){
+      alert("Debes Seleccionar un cliente")
+      router.push("/clientList")
+    }
+    else if (projects.length === 0) {
       
         router.push("/projectCreate");
       

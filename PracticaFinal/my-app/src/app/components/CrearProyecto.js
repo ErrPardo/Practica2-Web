@@ -69,7 +69,7 @@ const FormProyecto=({clientId})=>{
         <div className=" border bg-white border-gray-300 rounded-xl shadow-xl w-3/4 h-full flex justify-center items-center flex-col ml-2">
         <h1 className='text-6xl font-bold text-center text-gray-800'>NuevoProyecto</h1>
         <form className=" h-2/4 w-[90%] flex flex-wrap justify-center gap-1" onSubmit={handleSubmit(onSubmit)}>
-            <p className="w-full text-lg font-medium text-gray-700">NuevoProyecto</p>
+            <p className="w-full text-lg font-medium text-gray-700">Nombre del proyecto</p>
             <input className="bg-white border border-gray-300 rounded-xl shadow-xl flex-1 p-5" {...register('name')} placeholder="Nombre proyecto"></input>
             {errors.name && <p>{errors.name.message}</p>}
 
