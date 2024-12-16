@@ -1,7 +1,6 @@
-import NavBar from "../components/navBar"
-import NavBarSecundario from "../components/navBarSecundario"
-export default function ResumenPage(){
+import NavBar from "../components/navBar";
 
+export default function ProovedoresPage(){
     return(
         <>
         <NavBar/>
@@ -10,5 +9,4 @@ export default function ResumenPage(){
         </div>
         </>
     )
-
 }

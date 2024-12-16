@@ -1,14 +1,23 @@
 import Image from "next/image"
 export default function NavBarProyectos(){
     return(  
-        <div className="w-screen flex border-black mt-5 gap-10 h-[5vh]">
-            <h1 className="text-2xl pl-5 text-center w-[10vw] pt-1">Proyectos</h1> 
-            <input className="w-6/12 border-2 shadow-2xl"></input>
-            <button className=" w-[5vw] shadow-2xl border-2">Buscar</button>
-            <div className="ml-[18%] relative w-[5vw] h-[8.5vh] bottom-4 flex border-2 border-black">
-                <Image src="/image.png" alt="No hay imagen disponible" fill/>   
-            </div>
-            <p>Eduardo Yanez</p>
+        <div className="w-full flex items-center justify-between p-4">
+      <h1 className="text-3xl font-semibold text-gray-800">Proyectos</h1>
+      <div className="flex items-center gap-4 w-1/2 max-w-lg">
+        <input className="w-full p-2 border-2 border-gray-300 rounded-lg shadow-sm" type="text" placeholder="Buscar Proyecto..."/>
+        <button className="w-[120px] bg-blue-600 text-white p-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">Buscar</button>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gray-300">
+          <Image src="/image.png" 
+                alt="No hay imagen disponible" 
+                fill 
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 20vw, 10vw"
+                style={{ objectFit: "cover" }}/>
         </div>
+        <p className="text-gray-700 font-medium">Eduardo Yanez</p>
+      </div>
+    </div>
     )
 }

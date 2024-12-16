@@ -1,11 +1,16 @@
-import NavBar from "../components/navBar";
-import ProyectosPage from "../components/ProyectosPage";
+
+import ProjectRouter from "../components/projectRouter";
+import { ProviderProject } from "../components/ContextProject";
+import { ThemeProvider } from "../components/Context";
 
 export default function ProjectPage(){
     return(
         <>
-            <NavBar/>
-            <ProyectosPage/>
+            <ProviderProject>
+                <ThemeProvider>
+                    <ProjectRouter/>
+                </ThemeProvider>
+            </ProviderProject>
         </>
     )
 }

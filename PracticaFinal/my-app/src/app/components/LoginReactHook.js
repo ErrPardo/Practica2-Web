@@ -1,32 +1,46 @@
 "use client"
 
-import {useForm} from 'react-hook-form'
-import {yupResolver} from '@hookform/resolvers/yup'
-import * as Yup from 'yup';
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
-import { useState } from 'react';
+import FormRegister from './FormRegister';
+import Link from 'next/link';
 
 export default function LoginReactHook(){
     const router=useRouter();
-
-    const SignSquema=Yup.object({
-        email:Yup.string().email("No es un email valido").required(),
-        password:Yup.string().min(4,'Minimo 4 caracteres').max(15,'Maximo 15 caracteres').required()
-    })
-    
-    const {register,handleSubmit,formState:{errors}}=useForm({resolver:yupResolver(SignSquema)});
-    
-    function onSubmit(data){
-        //console.log(data)
-        fetch(`https://bildy-rpmaya.koyeb.app/api/user/login`,{
-            method:"POST",
-            headers:{ 'Content-Type': 'application/json'},
-            body:JSON.stringify(data)  
+    function onSubmit(data) {
+        fetch(`https://bildy-rpmaya.koyeb.app/api/user/login`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         })
-        .then(result=>(result.json()))
-        .then(json=>(console.log(json),localStorage.setItem('jwt', json.token)))
-        router.push('./client')
+        .then(response => {
+            if (!response.ok) {
+                // Si el servidor responde con un error (ej. 401, 400, etc.)
+                return response.json().then(err => {
+                    throw new Error(err.message || "Login failed. Please try again.");
+                });
+            }
+            return response.json();
+        })
+        .then(json => {
+            if (!json.token) {
+                throw new Error("Invalid response: Token not received.");
+            }
+            // Guardar el token en localStorage
+            localStorage.setItem('jwt', json.token);
+            console.log("Login exitoso:", json);
+    
+            // Redirigir al usuario
+            router.push("/loader");
+            setTimeout(() => {
+                router.push("/verification");
+            }, 3000)
+        })
+        .catch(error => {
+            // Manejar errores
+            console.error("Error en el login:", error.message);
+            alert(`Login error: ${error.message}`); // Mostrar error al usuario
+        })
     }
     
     useEffect(()=>{
@@ -36,27 +50,17 @@ export default function LoginReactHook(){
             router.push("/loader");
             setTimeout(() => {
                 router.push("/client")
-            }, 3000);
-            
+            }, 3000);    
         } 
     },[])
 
     return(
         
-        <div className=' flex flex-col items-center w-screen h-screen'>
-        <h1 className='flex justify-center relative -bottom-1/4 text-6xl'>Create your ID</h1>
-        <form className="h-2/4 flex flex-wrap items-center justify-center relative -bottom-1/4 w-2/4 " onSubmit={handleSubmit(onSubmit)}>
-            <p className='w-screen text-3xl'>Correo</p>
-            <input className="border-2 w-screen h-16 shadow-2xl rounded" {...register('email')} placeholder="Introduce email"></input>
-            {errors.email && <p>{errors.email.message}</p>}
-            <p className='w-screen text-3xl'>Contraseña</p>
-            <input className='border-2 w-screen h-16 shadow-2xl rounded' {...register('password')} placeholder="Introduce el password"></input>
-            {errors.password && <p>{errors.password.message}</p>}
-            <div className='w-screen flex justify-center'>
-            <button className='border-2 w-6/12 h-16 shadow-2xl rounded hover:bg-slate-300'>Aceptar</button>
-            </div>
-            
-        </form>
-        </div>
+    <div className='flex flex-col items-center justify-center w-screen h-screen bg-gray-100'>
+        <h1 className='text-6xl font-semibold text-gray-800 mb-10'>Create your ID</h1>
+        <FormRegister onSubmit={onSubmit}/>
+        <Link className="text-xl w-1/2 font-semibold text-blue-500 text-end text-decoration-line: underline hover:text-blue-700 transform transition-transform duration-200 ease-in-out" href="../register">Registrate</Link>
+    </div>
+
     )
 }
