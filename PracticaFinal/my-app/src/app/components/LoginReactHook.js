@@ -33,7 +33,7 @@ export default function LoginReactHook(){
             // Redirigir al usuario
             router.push("/loader");
             setTimeout(() => {
-                router.push("/verification");
+                router.push("/client");
             }, 3000)
         })
         .catch(error => {

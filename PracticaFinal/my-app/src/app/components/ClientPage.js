@@ -48,6 +48,7 @@ const RellenarClientPage=({handleClick,logo})=>{
         const array=data.address.split(',')
         const address={"street":array[0],"number":array[1],"postal":array[2],"province":array[3]}
         data={...data,address}
+        console.log(data)
         fetch(`https://bildy-rpmaya.koyeb.app/api/client`,{
             method:"POST",
             headers:{ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
